@@ -22,9 +22,8 @@ public class HelloScala  {
     @ResponseStatus( HttpStatus.CREATED )
     @ResponseBody
     public String CreateUser(@RequestBody User user) {
-       if (user == null) {
-    	  // handle error 
-    	   return "";
+       if (user == null || user.getEmail() == null || user.getPassword() == null) {
+    	  throw new BadRequestException("bad request"); 
        }
        user_cache.addUser(user);
        card_cache.addNewUser(user.getUserId());
@@ -67,7 +66,6 @@ public class HelloScala  {
     @ResponseBody
     public String CreateIDCard(@PathVariable("user_id") String user_id, @RequestBody IDCard card) {
        if (card == null) {
-    	  return ""; 
        }
        card_cache.addNewCards(user_id,card);
        return card.toString();

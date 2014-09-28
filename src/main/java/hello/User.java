@@ -11,7 +11,7 @@ public class User
   private String user_id = "u-";
   private String name;
   private String created_at, updated_at;
-  private long last_modified;
+  private Long last_modified; 
   static int count = 100; 
   static DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
   static Date date;
@@ -19,15 +19,18 @@ public class User
   @JsonCreator
   public User(Map<String,Object> props)
   {
-    this.name = (String) props.get("name");
     this.password = (String) props.get("password");
     this.email = (String) props.get("email");
+    if (this.email == null || this.password == null) {
+      // Invalid object.
+      return;
+    }
+    this.name = (String) props.get("name");
     this.user_id += Integer.toString(++count);
-	date = new Date();
-	this.created_at = dateFormat.format(date);
-	this.updated_at = created_at;
-	this.last_modified = System.currentTimeMillis(); 
-	
+    date = new Date();
+    this.created_at = dateFormat.format(date);
+    this.updated_at = created_at;
+    this.last_modified = System.currentTimeMillis(); 
   }
   
   public User(String email, String password){
@@ -63,10 +66,10 @@ public class User
 	  return this.updated_at;
   }
 
-  public long getLastModified(){
+  public Long getLastModified() {
 	  return this.last_modified;
   }
-  
+
   public void setUserName(String _name){
 	  this.name = _name;
 	  date = new Date();

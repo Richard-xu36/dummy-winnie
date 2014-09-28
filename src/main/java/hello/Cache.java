@@ -3,7 +3,7 @@ import java.util.*;
 
 class Cache{
 	private HashMap<String, User> map;
-	private HashMap<String, Long> lastmodified_map;
+	private HashMap<String, Long> lastmodified_map ;
 	
 	public Cache(){
 		map = new HashMap<String, User>();
