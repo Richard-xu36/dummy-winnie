@@ -66,8 +66,8 @@ public class User
 	  return this.updated_at;
   }
 
-  public Long getLastModified() {
-	  return this.last_modified;
+  public String getLastModified() {
+	  return String.valueOf(this.last_modified);
   }
 
   public void setUserName(String _name){
@@ -90,7 +90,6 @@ public class User
 	  this.updated_at = dateFormat.format(date);
 	  this.last_modified = System.currentTimeMillis(); 
   }
-  
  
   public String toString(){
 	  return "{\nuser_id: " + this.user_id + 

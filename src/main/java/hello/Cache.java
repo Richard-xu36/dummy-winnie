@@ -3,20 +3,32 @@ import java.util.*;
 
 class Cache{
 	private HashMap<String, User> map;
-	private HashMap<String, Long> lastmodified_map ;
+	private HashMap<String, String> lastmodified_map ;
 	
 	public Cache(){
 		map = new HashMap<String, User>();
-		lastmodified_map = new HashMap<String, Long>();
+		lastmodified_map = new HashMap<String, String>();
 	}
 
-	public User getUser(String user_id){
-		if (this.map.containsKey(user_id))
-			return this.map.get(user_id);
-		else
-			return new User("","");
+        // Return type indicates whether the user has changed since last_modified.
+	public User getUser(final String user_id,
+			    Boolean[] is_deleted, // Simulate pass by refence..
+                            final String last_modified){
+		is_deleted[0] = false;
+		if (last_modified == null || 
+		    !lastmodified_map.get(user_id).equals( last_modified)) {
+			User user = map.get(user_id);
+			if (user == null) {
+			   is_deleted[0] = true;
+			}
+			return user;
+		}
+		return null;
 	}
 
+        public User getUser(String user_id) {
+	     return map.get(user_id);
+        }
 	public void addUser(User user){
 		this.map.put(user.getUserId(),user);
 		this.lastmodified_map.put(user.getUserId(), user.getLastModified());

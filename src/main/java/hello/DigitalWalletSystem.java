@@ -3,6 +3,7 @@ package hello;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import java.util.*;
+import javax.servlet.http.*;
 
 @RestController
 public class DigitalWalletSystem  {
@@ -22,7 +23,6 @@ public class DigitalWalletSystem  {
     @ResponseStatus( HttpStatus.CREATED )
     @ResponseBody
     public String CreateUser(@RequestBody User user) {
-    	// handle error 
        if (user == null || user.getEmail() == null && user.getPassword() == null) {
         throw new BadRequestException("Missing required fields: email and password"); 
        }
@@ -42,12 +42,19 @@ public class DigitalWalletSystem  {
   //GET:View User
     @RequestMapping(value="/users/{user_id}", method=RequestMethod.GET)
     @ResponseBody
-    public String ViewUser(@PathVariable("user_id") String user_id) 
-    { if (user_cache.getUser(user_id) == null) {
-        // handle error 
-       return "";
+    public String ViewUser(@PathVariable("user_id") String user_id, HttpServletRequest req, HttpServletResponse res) 
+    { 
+      String last_modified = req.getHeader("If-None-Match");
+      Boolean[] is_deleted = new Boolean[1];
+      System.out.println("user id" + user_id);
+      User user = user_cache.getUser(user_id, is_deleted,last_modified);
+      if (user == null) {
+         if(!is_deleted[0]) {
+	     res.setStatus(304);
+	 }
+         return "{}";	 
       }
-      User user = user_cache.getUser(user_id);
+      res.setHeader("ETAG", user.getLastModified());
       return user.toString();
     }
     
